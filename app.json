@@ -3,8 +3,8 @@
     "name": "Ledge",
     "slug": "Ledge",
     "version": "1.0.0",
-
     "scheme": "Ledge",
+    "newArchEnabled": true,
     "web": {
       "bundler": "metro",
       "output": "static",
@@ -17,32 +17,41 @@
         {
           "launchMode": "most-recent"
         }
-      ]
+      ],
+      "expo-sqlite"
     ],
     "experiments": {
       "typedRoutes": true,
-
       "tsconfigPaths": true
     },
-
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
-
+    "icon": "./assets/logo-type-b-light.png",
     "userInterfaceStyle": "automatic",
-
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/logo-type-b.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#19363E"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.asktiba.Ledge"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
+      },
+      "package": "com.asktiba.Ledge"
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "5fcc9ab5-7eab-4edb-b713-6e5a47a42af3"
       }
     }
   }
