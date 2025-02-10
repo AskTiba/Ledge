@@ -1,4 +1,4 @@
-import { categories, transactions, months_summary } from '~/db/schema';
+import { categories, transactions } from '~/db/schema';
 import { ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
 import AsyncStorage from 'expo-sqlite/kv-store';
 import { eq } from 'drizzle-orm';
@@ -9,18 +9,93 @@ async function seedCategories(db: ExpoSQLiteDatabase) {
 
   if (existingCategories.length === 0) {
     await db.insert(categories).values([
+      // Income Categories
       { name: 'Salary', type: 'income' },
       { name: 'Freelancing', type: 'income' },
-      { name: 'Rent', type: 'expense' },
+      { name: 'Investments', type: 'income' },
+      { name: 'Gifts', type: 'income' },
+      { name: 'Refunds', type: 'income' },
+      { name: 'Side Hustles', type: 'income' },
+      { name: 'Rental Income', type: 'income' },
+      { name: 'Dividends', type: 'income' },
+      { name: 'Royalties', type: 'income' },
+      { name: 'Bonuses', type: 'income' },
+      { name: 'Grants', type: 'income' },
+      { name: 'Pension', type: 'income' },
+      { name: 'Scholarships', type: 'income' },
+      { name: 'Business Profits', type: 'income' },
+      { name: 'Stock Trading', type: 'income' },
+      { name: 'Crypto Earnings', type: 'income' },
+      { name: 'Consulting', type: 'income' },
+      { name: 'Affiliate Marketing', type: 'income' },
+      { name: 'Selling Used Items', type: 'income' },
+      { name: 'Tax Refunds', type: 'income' },
+      { name: 'Crowdfunding', type: 'income' },
+      { name: 'Lottery & Gambling Winnings', type: 'income' },
+      { name: 'Other Income', type: 'income' },
+
+      // Expense Categories
+      { name: 'Utilities', type: 'expense' },
+      { name: 'Electricity', type: 'expense' },
+      { name: 'Water', type: 'expense' },
+      { name: 'Internet', type: 'expense' },
+      { name: 'Phone Bill', type: 'expense' },
+      { name: 'Housing', type: 'expense' },
+      { name: 'Rent/Mortgage', type: 'expense' },
       { name: 'Groceries', type: 'expense' },
+      { name: 'Transportation', type: 'expense' },
+      { name: 'Car Maintenance', type: 'expense' },
+      { name: 'Public Transport', type: 'expense' },
+      { name: 'Fuel', type: 'expense' },
       { name: 'Entertainment', type: 'expense' },
+      { name: 'Movies & Shows', type: 'expense' },
+      { name: 'Concerts & Events', type: 'expense' },
+      { name: 'Gaming', type: 'expense' },
+      { name: 'Dining Out', type: 'expense' },
+      { name: 'Health', type: 'expense' },
+      { name: 'Insurance', type: 'expense' },
+      { name: 'Medical Bills', type: 'expense' },
+      { name: 'Prescriptions', type: 'expense' },
+      { name: 'Fitness & Gym', type: 'expense' },
+      { name: 'Education', type: 'expense' },
+      { name: 'Student Loans', type: 'expense' },
+      { name: 'Online Courses', type: 'expense' },
+      { name: 'Books & Supplies', type: 'expense' },
+      { name: 'Subscriptions', type: 'expense' },
+      { name: 'Streaming Services', type: 'expense' },
+      { name: 'Cloud Storage', type: 'expense' },
+      { name: 'Shopping', type: 'expense' },
+      { name: 'Clothing & Fashion', type: 'expense' },
+      { name: 'Electronics', type: 'expense' },
+      { name: 'Home Improvement', type: 'expense' },
+      { name: 'Travel', type: 'expense' },
+      { name: 'Vacation', type: 'expense' },
+      { name: 'Flight Tickets', type: 'expense' },
+      { name: 'Hotel Accommodation', type: 'expense' },
+      { name: 'Charity & Donations', type: 'expense' },
+      { name: 'Gifts & Celebrations', type: 'expense' },
+      { name: 'Childcare', type: 'expense' },
+      { name: 'Babysitting', type: 'expense' },
+      { name: 'School Fees', type: 'expense' },
+      { name: 'Pets', type: 'expense' },
+      { name: 'Pet Food', type: 'expense' },
+      { name: 'Veterinary Bills', type: 'expense' },
+      { name: 'Debt Payments', type: 'expense' },
+      { name: 'Loan Repayments', type: 'expense' },
+      { name: 'Credit Card Payments', type: 'expense' },
+      { name: 'Bank Fees', type: 'expense' },
+      { name: 'Taxes', type: 'expense' },
+      { name: 'Miscellaneous', type: 'expense' },
+      { name: 'Other Expenses', type: 'expense' },
     ]);
+
     console.log('Categories seeded!');
   } else {
     console.log('Categories already exist!');
   }
 }
 
+// Function to generate random transaction data for multiple years
 // Function to seed transactions if they don't already exist
 async function seedTransactions(db: ExpoSQLiteDatabase) {
   const existingTransactions = await db.select().from(transactions);
@@ -31,14 +106,14 @@ async function seedTransactions(db: ExpoSQLiteDatabase) {
 
     await db.insert(transactions).values([
       {
-        amount: 1500,
+        amount: 600,
         type: 'income',
         category_id: categoryMap['Salary'],
         date: '2025-02-01',
         note: 'February Salary',
       },
       {
-        amount: 500,
+        amount: 300,
         type: 'income',
         category_id: categoryMap['Freelancing'],
         date: '2025-02-03',
@@ -47,7 +122,7 @@ async function seedTransactions(db: ExpoSQLiteDatabase) {
       {
         amount: 300,
         type: 'expense',
-        category_id: categoryMap['Rent'],
+        category_id: categoryMap['Rent/Mortgage'],
         date: '2025-02-05',
         note: 'Monthly rent',
       },
@@ -65,42 +140,38 @@ async function seedTransactions(db: ExpoSQLiteDatabase) {
         date: '2025-02-10',
         note: 'Movie night',
       },
+      {
+        amount: 75,
+        type: 'expense',
+        category_id: categoryMap['Health'],
+        date: '2025-02-10',
+        note: 'Visit to the dentist',
+      },
+      {
+        amount: 35,
+        type: 'expense',
+        category_id: categoryMap['Fuel'],
+        date: '2025-02-10',
+        note: 'Trip to Comeedy Store',
+      },
+      {
+        amount: 20,
+        type: 'expense',
+        category_id: categoryMap['Babysitting'],
+        date: '2025-02-10',
+        note: 'Night date',
+      },
+      {
+        amount: 40,
+        type: 'expense',
+        category_id: categoryMap['Fitness & Gym'],
+        date: '2025-02-10',
+        note: 'Ready for Marathon',
+      },
     ]);
     console.log('Transactions seeded!');
   } else {
     console.log('Transactions already exist!');
-  }
-}
-
-// Function to seed the monthly summary if it doesn't already exist
-async function seedMonthlySummary(db: ExpoSQLiteDatabase) {
-  const month = '2025-02';
-  const existingSummary = await db
-    .select()
-    .from(months_summary)
-    .where(eq(months_summary.month, month));
-
-  if (existingSummary.length === 0) {
-    const transactionsList = await db.select().from(transactions);
-
-    const totalIncome = transactionsList
-      .filter((t) => t.type === 'income')
-      .reduce((sum, t) => sum + t.amount, 0);
-    const totalExpense = transactionsList
-      .filter((t) => t.type === 'expense')
-      .reduce((sum, t) => sum + t.amount, 0);
-    const netBalance = totalIncome - totalExpense;
-
-    await db.insert(months_summary).values({
-      month,
-      total_income: totalIncome,
-      total_expense: totalExpense,
-      net_balance: netBalance,
-    });
-
-    console.log('Monthly summary seeded!');
-  } else {
-    console.log('Monthly summary already exists!');
   }
 }
 
@@ -114,7 +185,6 @@ export const seedDatabase = async (db: ExpoSQLiteDatabase) => {
   // Step-by-step seeding process
   await seedCategories(db);
   await seedTransactions(db);
-  await seedMonthlySummary(db);
 
   // Mark the database as initialized in AsyncStorage
   AsyncStorage.setItemSync('dbInitialized', 'true');

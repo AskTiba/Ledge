@@ -20,16 +20,6 @@ export const categories = sqliteTable('categories', {
   type: text('type', { enum: ['income', 'expense'] }).notNull(), // Category type
 });
 
-// Monthly Summary Table
-export const months_summary = sqliteTable('months_summary', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
-  month: text('month').notNull().unique(), // Format YYYY-MM
-  total_income: real('total_income').default(0), // Total income for the month
-  total_expense: real('total_expense').default(0), // Total expenses for the month
-  net_balance: real('net_balance').default(0), // Net balance
-});
-
 // Export Types for Use in the App
 export type Transaction = typeof transactions.$inferSelect;
 export type Category = typeof categories.$inferSelect;
-export type MonthSummary = typeof months_summary.$inferSelect;

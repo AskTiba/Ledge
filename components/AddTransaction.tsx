@@ -146,7 +146,7 @@ function CategoryButton({
         backgroundColor: isSelected ? '#007BFF20' : '#00000020',
         borderRadius: 15,
         marginBottom: 6,
-      }}>
+      }}> 
       <Text
         style={{
           fontWeight: '700',

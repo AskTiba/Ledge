@@ -8,7 +8,7 @@ interface CardProps extends React.PropsWithChildren {
 export default function Card({ children, style = {} }: CardProps) {
   return (
     <View
-      className="rounded-xl bg-white p-5"
+      className="rounded-xl bg-green-200 p-5"
       style={{
         elevation: 8,
         shadowColor: '#000',
