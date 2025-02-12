@@ -1,6 +1,6 @@
 import { useSQLiteContext } from 'expo-sqlite';
 import { eq } from 'drizzle-orm';
-import { transactions, categories, months_summary } from '~/db/schema'; // Import table schemas
+import { transactions, categories } from '~/db/schema'; // Import table schemas
 import { AsyncStorage } from 'expo-sqlite/kv-store';
 
 export function useDatabaseUtils() {
