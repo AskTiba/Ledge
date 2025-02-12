@@ -176,6 +176,7 @@ export default function AddTransaction() {
       </ScrollView>
 
       <Button className="my-4" title="Submit" onPress={handleSubmit(onSubmit)} />
+      <Button className="my-4" title="Submit" onPress={handleSubmit(onSubmit)} />
     </View>
   );
 }

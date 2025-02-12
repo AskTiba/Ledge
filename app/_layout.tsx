@@ -11,13 +11,14 @@ import { ThemeToggle } from '~/components/ThemeToggle';
 import { useColorScheme, useInitialAndroidBarSync } from '~/lib/useColorScheme';
 import { NAV_THEME } from '~/theme';
 import React, { Suspense, useEffect } from 'react';
-import { ActivityIndicator } from 'react-native';
+import { View } from 'react-native';
 
 import { SQLiteProvider, openDatabaseSync } from 'expo-sqlite';
 import { drizzle } from 'drizzle-orm/expo-sqlite';
 import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator';
 import migrations from '~/drizzle/migrations';
 import { seedDatabase } from '~/db/seed';
+import LottieView from 'lottie-react-native';
 
 export const DATABASE_NAME = 'ledger';
 
@@ -43,12 +44,21 @@ export default function RootLayout() {
     <>
       <StatusBar
         key={`root-status-bar-${isDarkColorScheme ? 'light' : 'dark'}`}
-        style={isDarkColorScheme ? 'light' : 'dark'}
+        style={isDarkColorScheme ? 'dark' : 'dark'}
       />
       <GestureHandlerRootView style={{ flex: 1 }}>
         <BottomSheetModalProvider>
           <ActionSheetProvider>
-            <Suspense fallback={<ActivityIndicator size={'large'} />}>
+            <Suspense
+              fallback={
+                <View className="flex-1 items-center justify-center">
+                  <LottieView
+                    autoPlay
+                    style={{ width: 300, height: 400 }}
+                    source={require('~/assets/lotties/loading.json')}
+                  />
+                </View>
+              }>
               <SQLiteProvider
                 databaseName={DATABASE_NAME}
                 options={{ enableChangeListener: true }}

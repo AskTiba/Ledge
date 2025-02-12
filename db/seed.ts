@@ -129,10 +129,6 @@ async function seedTransactions(db: ExpoSQLiteDatabase) {
 // Main function to seed the database
 export const seedDatabase = async (db: ExpoSQLiteDatabase) => {
   try {
-    // Force reset AsyncStorage for testing
-    console.log('🔄 Resetting database state...');
-    AsyncStorage.removeItemSync('dbInitialized');
-
     const value = AsyncStorage.getItemSync('dbInitialized');
     if (value) {
       console.log('✅ Database already initialized. Skipping seeding.');

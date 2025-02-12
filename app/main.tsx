@@ -1,16 +1,23 @@
-import React, { useState, useEffect } from 'react';
-import { FlatList, View, Text, ActivityIndicator, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import {
+  FlatList,
+  View,
+  Text,
+  ActivityIndicator,
+  TouchableOpacity,
+  ScrollView,
+} from 'react-native';
 import { useSQLiteContext } from 'expo-sqlite';
 import { drizzle } from 'drizzle-orm/expo-sqlite';
 import * as schema from '~/db/schema';
-import { Picker } from '@react-native-picker/picker';
 import dayjs from 'dayjs';
 import { Ionicons } from '@expo/vector-icons';
 import { router, Stack } from 'expo-router';
 import LottieView from 'lottie-react-native';
 import { Category, Transaction, transactions } from '~/db/schema';
-import { eq, desc } from 'drizzle-orm'; // Import desc for sorting
+import { eq, desc } from 'drizzle-orm';
 import { useLocalSearchParams } from 'expo-router';
+import BottomSheet from '@gorhom/bottom-sheet';
 
 export default function Main() {
   const db = useSQLiteContext();
@@ -22,6 +29,8 @@ export default function Main() {
   const [error, setError] = useState<string | null>(null);
   const [selectedMonth, setSelectedMonth] = useState(dayjs().format('YYYY-MM'));
 
+  const bottomSheetRef = useRef<BottomSheet>(null);
+
   const params = useLocalSearchParams();
 
   // Fetch data on component mount
@@ -32,8 +41,8 @@ export default function Main() {
   useEffect(() => {
     if (typeof params.newTransaction === 'string') {
       try {
-        const transaction = JSON.parse(params.newTransaction); // Parse string back to object
-        setTransactionsData((prev) => [transaction, ...prev]); // Add new transaction to the list
+        const transaction = JSON.parse(params.newTransaction);
+        setTransactionsData((prev) => [transaction, ...prev]);
       } catch (error) {
         console.error('Error parsing transaction:', error);
       }
@@ -43,7 +52,7 @@ export default function Main() {
   const loadData = async () => {
     try {
       const transactionsResult = await drizzleDb.query.transactions.findMany({
-        orderBy: (transactions) => [desc(transactions.created_at)], // Sort by created_at in descending order
+        orderBy: (transactions) => [desc(transactions.created_at)],
       });
       setTransactionsData(transactionsResult || []);
 
@@ -57,13 +66,9 @@ export default function Main() {
     }
   };
 
-  // Function to delete a transaction
   const deleteTransaction = async (id: number) => {
     try {
-      // Use eq to create a proper SQL condition
       await drizzleDb.delete(transactions).where(eq(transactions.id, id)).execute();
-
-      // Update the state to remove the deleted transaction
       setTransactionsData((prevData) => prevData.filter((transaction) => transaction.id !== id));
     } catch (err) {
       console.error('Error deleting transaction:', err);
@@ -71,10 +76,9 @@ export default function Main() {
     }
   };
 
-  // Group transactions by month and sort within each month
   const groupedTransactions = transactionsData.reduce(
     (acc, transaction) => {
-      const month = transaction.date.slice(0, 7); // Extract YYYY-MM
+      const month = transaction.date.slice(0, 7);
       if (!acc[month]) {
         acc[month] = [];
       }
@@ -84,18 +88,14 @@ export default function Main() {
     {} as Record<string, schema.Transaction[]>
   );
 
-  // Sort transactions within each month by created_at in descending order
   for (const month in groupedTransactions) {
     groupedTransactions[month].sort(
       (a, b) => dayjs(b.created_at).unix() - dayjs(a.created_at).unix()
     );
   }
 
-
-  // Extract unique months from transactions
   const months = Object.keys(groupedTransactions).sort((a, b) => b.localeCompare(a));
 
-  // Calculate the total income, expense, and net balance for the selected month
   const calculateMonthlySummary = (month: string) => {
     const transactionsForMonth = groupedTransactions[month] || [];
 
@@ -114,7 +114,6 @@ export default function Main() {
 
   const { totalIncome, totalExpense, netBalance } = calculateMonthlySummary(selectedMonth);
 
-  // Helper function to get category name by ID
   const getCategoryNameById = (categoryId: number) => {
     const category = categoriesData.find((cat) => cat.id === categoryId);
     return category ? category.name : 'Uncategorized';
@@ -122,7 +121,7 @@ export default function Main() {
 
   const renderTransactionCard = ({ item }: { item: schema.Transaction }) => (
     <TouchableOpacity
-      onLongPress={() => deleteTransaction(item.id)} // Trigger delete on long press
+      onLongPress={() => deleteTransaction(item.id)}
       className="mb-3 rounded-lg bg-white p-4 shadow-xl">
       <View className="mb-2 flex-row items-center justify-between">
         <Text className="text-lg font-semibold">${item.amount.toFixed(2)}</Text>
@@ -139,32 +138,26 @@ export default function Main() {
     </TouchableOpacity>
   );
 
+  const handleMonthYearSelection = (month: string) => {
+    setSelectedMonth(month);
+    bottomSheetRef.current?.close();
+  };
+
   return (
     <View className="flex-1 bg-gray-100">
       <Stack.Screen
         options={{
-          headerTitle: 'Transactions',
+          headerTitle: '',
           headerRight: () => (
-            <View className="flex-row items-center justify-between px-4">
-              <Text className="text-xl font-bold">Transactions</Text>
-              <View className="rounded-lg border border-gray-300">
-                <Picker
-                  selectedValue={selectedMonth}
-                  onValueChange={(itemValue) => setSelectedMonth(itemValue)}
-                  style={{ width: 150 }}>
-                  {months.map((month) => (
-                    <Picker.Item
-                      key={month}
-                      label={dayjs(month).format('MMMM YYYY')}
-                      value={month}
-                    />
-                  ))}
-                </Picker>
-              </View>
+            <View className='mr-3'>
+              <TouchableOpacity onPress={() => bottomSheetRef.current?.snapToIndex(0)}>
+                <Text className="text-lg">{dayjs(selectedMonth).format('MMMM YYYY')}</Text>
+              </TouchableOpacity>
             </View>
           ),
         }}
       />
+
       {/* Monthly Summary Dashboard */}
       <View className="mx-3 mt-2 rounded-lg bg-white p-4 shadow-xl">
         <Text className="mb-1 px-3 text-lg font-semibold">Monthly Summary</Text>
@@ -212,6 +205,25 @@ export default function Main() {
         }}>
         <Ionicons name="add" size={24} color="white" />
       </TouchableOpacity>
+
+      {/* Bottom Sheet for Month and Year Selection */}
+      <BottomSheet
+        ref={bottomSheetRef}
+        index={-1} // Initially closed
+        snapPoints={['75%']}
+        enablePanDownToClose
+        backgroundComponent={({ style }) => <View style={[style, { backgroundColor: '#fff' }]} />}>
+        <ScrollView className="p-4">
+          {months.map((month) => (
+            <TouchableOpacity
+              key={month}
+              className="border-b border-gray-200 py-3"
+              onPress={() => handleMonthYearSelection(month)}>
+              <Text className="text-base text-gray-800">{dayjs(month).format('MMMM YYYY')}</Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      </BottomSheet>
     </View>
   );
 }
