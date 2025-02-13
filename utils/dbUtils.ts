@@ -12,15 +12,11 @@ export function useDatabaseUtils() {
     
     await db.withTransactionAsync(async () => {
       // Delete all rows from Transactions & Categories
-      await db.execAsync('DELETE FROM categories;');
       await db.execAsync('DELETE FROM transactions;');
-      await db.execAsync('DELETE FROM months_summary;');
 
       // Reset SQLite auto-increment counters
       await db.execAsync(`
         DELETE FROM sqlite_sequence WHERE name='Transactions';
-        DELETE FROM sqlite_sequence WHERE name='Categories';
-        DELETE FROM sqlite_sequence WHERE name='months_summary';
       `);
     });
 

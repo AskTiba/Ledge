@@ -78,7 +78,7 @@ export default function AddTransaction() {
 
       // Navigate back to the main screen and pass the new transaction
       router.replace({
-        pathname: '/main', // Change this to your actual main screen route
+        pathname: '/', // Change this to your actual main screen route
         params: { newTransaction: JSON.stringify(newTransaction[0]) },
       });
     } catch (error) {
@@ -102,7 +102,7 @@ export default function AddTransaction() {
         rules={{ required: 'Amount is required' }}
         render={({ field: { onChange, onBlur, value } }) => (
           <TextInput
-            className="mt-3 rounded-lg border pl-4"
+            className="mt-3 rounded-lg border pl-4 py-3"
             placeholder="Amount"
             onBlur={onBlur}
             onChangeText={onChange}
@@ -119,7 +119,7 @@ export default function AddTransaction() {
         rules={{ required: 'Description is required' }}
         render={({ field: { onChange, onBlur, value } }) => (
           <TextInput
-            className="mt-3 rounded-lg border pl-4"
+            className="mt-3 rounded-lg border pl-4 py-3"
             placeholder="Description"
             onBlur={onBlur}
             onChangeText={onChange}
@@ -136,7 +136,7 @@ export default function AddTransaction() {
         render={({ field: { value } }) => (
           <TouchableOpacity onPress={() => setShowDatePicker(true)} className="mt-3">
             <TextInput
-              className="rounded-lg border pl-4"
+              className="rounded-lg border pl-4 py-3"
               placeholder="Date"
               value={value}
               editable={false}
@@ -175,8 +175,7 @@ export default function AddTransaction() {
         </View>
       </ScrollView>
 
-      <Button className="my-4" title="Submit" onPress={handleSubmit(onSubmit)} />
-      <Button className="my-4" title="Submit" onPress={handleSubmit(onSubmit)} />
+      <Button className="mb-8 mt-3" title="Submit" onPress={handleSubmit(onSubmit)} />
     </View>
   );
 }
